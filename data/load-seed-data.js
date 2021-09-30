@@ -1,8 +1,8 @@
-const bcrypt = require('bcryptjs');
+// const bcrypt = require('bcryptjs');
 const client = require('../lib/client');
 // import our seed data:
-const animals = require('./animals.js');
-const usersData = require('./users.js');
+const thingQuotes = require('./thingQuotes.js');
+// const usersData = require('./users.js');
 const { getEmoji } = require('../lib/emoji.js');
 run();
 
@@ -11,27 +11,27 @@ async function run() {
   try {
     await client.connect();
 
-    const users = await Promise.all(
-      usersData.map(user => {
-        const hash = bcrypt.hashSync(user.password, 8);
-        return client.query(`
-                      INSERT INTO users (email, hash)
-                      VALUES ($1, $2)
-                      RETURNING *;
-                  `,
-        [user.email, hash]);
-      })
-    );
+    // const users = await Promise.all(
+    //   usersData.map(user => {
+    //     const hash = bcrypt.hashSync(user.password, 8);
+    //     return client.query(`
+    //                   INSERT INTO users (email, hash)
+    //                   VALUES ($1, $2)
+    //                   RETURNING *;
+    //               `,
+    //     [user.email, hash]);
+    //   })
+    // );
       
-    const user = users[0].rows[0];
+    // const user = users[0].rows[0];
 
     await Promise.all(
-      animals.map(animal => {
+      thingQuotes.map(quote => {
         return client.query(`
-                    INSERT INTO animals (name, cool_factor, owner_id)
-                    VALUES ($1, $2, $3);
+                    INSERT INTO thing_quotes (name, role, quote, known_thing, outpost)
+                    VALUES ($1, $2, $3, $4, $5);
                 `,
-        [animal.name, animal.cool_factor, user.id]);
+        [quote.name, quote.role, quote.quote, quote.knownThing, quote.outpost]);
       })
     );
     
