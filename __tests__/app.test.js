@@ -28,6 +28,39 @@ describe('app routes', () => {
       return client.end(done);
     });
 
+    test('returns categories', async() => {
+
+      const expectation = [
+        {
+          id: 1,
+          role: 'helicopter pilot',
+        },
+        {
+          id: 2,
+          role: 'mechanic',
+        },
+        {
+          id: 3,
+          role: 'biologist',
+        },
+        {
+          id: 4,
+          role: 'dog handler',
+        },
+        {
+          id: 5,
+          role: 'geologist',
+        }
+      ];
+
+      const data = await fakeRequest(app)
+        .get('/categories')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(data.body).toEqual(expectation);
+    });
+
     test('returns quotes', async() => {
 
       const expectation = [
@@ -40,19 +73,19 @@ describe('app routes', () => {
           outpost: 31
         },
         {
-          id: 2,
-          name: 'Palmer',
-          role: 'assistant mechanic',
-          quote: 'I was wondering when El Capitan was gonna get a chance to use his popgun.',
-          known_thing: true,
+          id: 7,
+          name: 'Childs',
+          role: 'mechanic',
+          quote: 'Cut me loose, dammit!',
+          known_thing: false,
           outpost: 31
         },
         {
-          id: 3,
-          name: 'Fuchs',
-          role: 'assistant biologist',
-          quote: 'It could have imitated a million life forms on a million planets. It could change into any one of them at any time. Now, it wants life forms on Earth.',
-          known_thing: false,
+          id: 2,
+          name: 'Palmer',
+          role: 'mechanic',
+          quote: 'I was wondering when El Capitan was gonna get a chance to use his popgun.',
+          known_thing: true,
           outpost: 31
         },
         {
@@ -61,6 +94,14 @@ describe('app routes', () => {
           role: 'biologist',
           quote: 'You see, what we\'re talkin\' about here is an organism that imitates other life-forms, and it imitates \'em perfectly. When this thing attacked our dogs it tried to digest them... absorb them, and in the process shape its own cells to imitate them.',
           known_thing: true,
+          outpost: 31
+        },
+        {
+          id: 3,
+          name: 'Fuchs',
+          role: 'biologist',
+          quote: 'It could have imitated a million life forms on a million planets. It could change into any one of them at any time. Now, it wants life forms on Earth.',
+          known_thing: false,
           outpost: 31
         },
         {
@@ -78,7 +119,7 @@ describe('app routes', () => {
           quote: 'I\'d say the ice this thing is buried in is 100,000 years old... At least.',
           known_thing: true,
           outpost: 31
-        }
+        } 
       ];
 
       const data = await fakeRequest(app)
@@ -92,14 +133,14 @@ describe('app routes', () => {
     test('returns quote', async() => {
 
       const expectation = 
-        {
-          id: 1,
-          name: 'MacReady',
-          role: 'helicopter pilot',
-          quote: 'I know I\'m human. And if you were all these Things, then you\'d just attack me right now, so I know some of you are still human.',
-          known_thing: false,
-          outpost: 31
-        };
+      {
+        id: 1,
+        name: 'MacReady',
+        role: 'helicopter pilot',
+        quote: 'I know I\'m human. And if you were all these Things, then you\'d just attack me right now, so I know some of you are still human.',
+        known_thing: false,
+        outpost: 31
+      };
 
       const data = await fakeRequest(app)
         .get('/thingQuotes/1')
@@ -115,7 +156,7 @@ describe('app routes', () => {
       {
         id: 6,
         name: 'Norris',
-        role: 'geologist',
+        role_id: 5,
         quote: 'I\'d say the ice this thing is buried in is 100,000 years old... At least.',
         known_thing: true,
         outpost: 31
@@ -131,19 +172,19 @@ describe('app routes', () => {
           outpost: 31
         },
         {
-          id: 2,
-          name: 'Palmer',
-          role: 'assistant mechanic',
-          quote: 'I was wondering when El Capitan was gonna get a chance to use his popgun.',
-          known_thing: true,
+          id: 7,
+          name: 'Childs',
+          role: 'mechanic',
+          quote: 'Cut me loose, dammit!',
+          known_thing: false,
           outpost: 31
         },
         {
-          id: 3,
-          name: 'Fuchs',
-          role: 'assistant biologist',
-          quote: 'It could have imitated a million life forms on a million planets. It could change into any one of them at any time. Now, it wants life forms on Earth.',
-          known_thing: false,
+          id: 2,
+          name: 'Palmer',
+          role: 'mechanic',
+          quote: 'I was wondering when El Capitan was gonna get a chance to use his popgun.',
+          known_thing: true,
           outpost: 31
         },
         {
@@ -152,6 +193,14 @@ describe('app routes', () => {
           role: 'biologist',
           quote: 'You see, what we\'re talkin\' about here is an organism that imitates other life-forms, and it imitates \'em perfectly. When this thing attacked our dogs it tried to digest them... absorb them, and in the process shape its own cells to imitate them.',
           known_thing: true,
+          outpost: 31
+        },
+        {
+          id: 3,
+          name: 'Fuchs',
+          role: 'biologist',
+          quote: 'It could have imitated a million life forms on a million planets. It could change into any one of them at any time. Now, it wants life forms on Earth.',
+          known_thing: false,
           outpost: 31
         },
         {
@@ -183,7 +232,7 @@ describe('app routes', () => {
         {
           id: expect.any(Number),
           name: 'Nauls',
-          role: 'cook',
+          role_id: 1,
           quote: 'Maybe we at war with Norway now.',
           known_thing: false,
           outpost: 31
@@ -194,7 +243,7 @@ describe('app routes', () => {
         .post('/thingQuotes')
         .send({
           name: 'Nauls',
-          role: 'cook',
+          role_id: 1,
           quote: 'Maybe we at war with Norway now.',
           known_thing: false
         })
@@ -210,9 +259,9 @@ describe('app routes', () => {
         {
           id: 5,
           name: 'Clark',
-          role: 'dog guy',
+          role_id: 4,
           quote: 'I say a lot of things.',
-          known_thing: false,
+          known_thing: true,
           outpost: 31
         }
       ;
@@ -221,9 +270,9 @@ describe('app routes', () => {
         .put('/thingQuotes/5')
         .send({
           name: 'Clark',
-          role: 'dog guy',
+          role_id: 4,
           quote: 'I say a lot of things.',
-          known_thing: false
+          known_thing: true
         })
         .expect('Content-Type', /json/)
         .expect(200);

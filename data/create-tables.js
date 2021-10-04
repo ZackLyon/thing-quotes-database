@@ -12,16 +12,21 @@ async function run() {
 
     // run a query to create tables
     await client.query(`
+
+        CREATE TABLE categories (
+          id SERIAL PRIMARY KEY NOT NULL,
+          role VARCHAR(512) NOT NULL
+        ); 
                 
-                CREATE TABLE thing_quotes (
-                    id SERIAL PRIMARY KEY NOT NULL,
-                    name VARCHAR(512) NOT NULL,
-                    role VARCHAR(512) NOT NULL,
-                    quote VARCHAR(512) NOT NULL,
-                    known_thing BOOLEAN NOT NULL,
-                    outpost INTEGER NOT NULL
-            );
-        `);
+        CREATE TABLE thing_quotes (
+            id SERIAL PRIMARY KEY NOT NULL,
+            name VARCHAR(512) NOT NULL,
+            role_id INTEGER NOT NULL REFERENCES categories(id),
+            quote VARCHAR(512) NOT NULL,
+            known_thing BOOLEAN NOT NULL,
+            outpost INTEGER NOT NULL
+        );
+    `);
 
     console.log('create tables complete', getEmoji(), getEmoji(), getEmoji());
   }
