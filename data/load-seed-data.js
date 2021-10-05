@@ -2,6 +2,7 @@
 const client = require('../lib/client');
 // import our seed data:
 const thingQuotes = require('./thingQuotes.js');
+const categories = require('./categories.js');
 // const usersData = require('./users.js');
 const { getEmoji } = require('../lib/emoji.js');
 run();
@@ -26,12 +27,22 @@ async function run() {
     // const user = users[0].rows[0];
 
     await Promise.all(
+      categories.map(category => {
+        return client.query(`
+                    INSERT INTO categories (role)
+                    VALUES ($1);
+                `,
+        [category.role]);
+      })
+    );
+
+    await Promise.all(
       thingQuotes.map(quote => {
         return client.query(`
-                    INSERT INTO thing_quotes (name, role, quote, known_thing, outpost)
+                    INSERT INTO thing_quotes (name, role_id, quote, known_thing, outpost)
                     VALUES ($1, $2, $3, $4, $5);
                 `,
-        [quote.name, quote.role, quote.quote, quote.knownThing, quote.outpost]);
+        [quote.name, quote.role_id, quote.quote, quote.knownThing, quote.outpost]);
       })
     );
     
